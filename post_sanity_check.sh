@@ -90,15 +90,15 @@ site-sanity-check() {
 
     # Web Checks
     echo -e "Performing Web Check now ..."
-    check_output=$(site-checkwebs $site | grep web)
-    echo -e "$check_output"
+    web_check_output=$(site-checkwebs $site | grep web)
+    echo -e "$web_check_output"
     nos_of_webs=$(esl2 $site | grep "web_rotation_status: 1000" | wc -l)
-    nos_of_success=$(echo "$check_output" | tr '[:upper:]' '[:lower:]' | grep -o 'success' | wc -l)
+    nos_of_success=$(echo "$web_check_output" | tr '[:upper:]' '[:lower:]' | grep -o 'success' | wc -l)
     if [ $nos_of_webs -eq $nos_of_success ]; then
         echo "Web Checks looks OK"
     else
         echo "Something's Wrong Here. Details Below:"
-        echo -e "$check_output"
+        echo -e "$web_check_output"
     fi
 }
 
