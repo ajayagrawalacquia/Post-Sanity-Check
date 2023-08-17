@@ -17,7 +17,13 @@ site-sanity-check() {
 
     # Gluster Checks
     echo -e "Checking Gluster ..."
-    site-checkgluster $site;
+    check_output=$(site-checkgluster $site)
+    if [[ $(echo "$check_output" | grep -i "failed") ]]; then
+        echo -e "Something's Wrong with Gluster ! Details below:"
+        echo -e "$check_output"
+    else
+        echo -e "Gluster looks OK.";
+    fi
 
     # Site Check
     check_output=$(site-check $site)
