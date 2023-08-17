@@ -42,7 +42,7 @@ check_high_load() {
         
         if [ -n "$load_average" ]; then
             numeric_load=$(echo "$load_average" | awk '{print $3}')
-            if (( $(echo "$numeric_load > 1.0" | bc -l) )); then
+            if (( $(echo "$numeric_load > 1.0" | bc -l) )); then    # assuming we need to check if load is above 1.0
                 echo "$line"
             fi
         fi
