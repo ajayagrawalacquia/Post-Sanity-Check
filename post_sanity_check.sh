@@ -156,6 +156,10 @@ site-sanity-checks() {
 
 
 # - - - - - - - - - - Server Checks - - - - - - - - - -
+
+server-sanity-checks () {
+    echo ""
+}
 # Monitoring Status
 # Service Status
 # Site Check for all the sites on the server ? (I think this might get pretty long for some servers. But just noting it down here)
