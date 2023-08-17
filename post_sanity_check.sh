@@ -26,6 +26,15 @@ fssh ()
     ssh -A -p 40506 -i $FIELDS_SSH_ID -o StrictHostKeyChecking=no $FUSER@`fqual $FHOST` $@
 }
 
+get_fuser ()
+{
+    if [ -z "$FIELDS_SSH_USER" ]; then
+        echo $USER;
+    else
+        echo $FIELDS_SSH_USER;
+    fi
+}
+
 
 check_high_load() {
     while IFS= read -r line; do
@@ -102,7 +111,7 @@ site-sanity-check() {
 
     # Web Checks
     echo -e "Performing Web Check now ..."
-    site-checkwebs $site >> $OPSTMP/webchecktemp$site
+    site-checkwebs $site > $OPSTMP/webchecktemp$site
     check_output=$(cat $OPSTMP/webchecktemp$site)
     # check_output=$(site-checkwebs $site | grep web-)
     echo -e "$check_output"
