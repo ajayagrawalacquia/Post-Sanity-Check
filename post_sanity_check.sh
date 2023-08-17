@@ -90,7 +90,8 @@ site-sanity-check() {
 
     # Web Checks
     echo -e "Performing Web Check now ..."
-    check_output=$(site-checkwebs $site | grep web)
+    site-checkwebs $site >> $OPSTMP/webchecktemp$site
+    check_output=$(cat $OPSTMP/webchecktemp$site)
     echo -e "$check_output"
     nos_of_webs=$(esl2 $site | grep "web_rotation_status: 1000" | wc -l)
     nos_of_success=$(echo "$check_output" | tr '[:upper:]' '[:lower:]' | grep -o 'success' | wc -l)
