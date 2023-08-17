@@ -72,7 +72,7 @@ site-sanity-check() {
 # Main Function
 main() {
     local input="$1"
-    input_to_check=$(is_site_or_server "input")
+    input_to_check=$(is_site_or_server "$input")
 
     if [ "$input_to_check" == "server" ]; then
         echo -e "Performing Post Sanity Server Checks on $input now ..."
