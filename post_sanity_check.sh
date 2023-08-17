@@ -75,11 +75,11 @@ main() {
     input_to_check=$(is_site_or_server "input")
 
     if [ "$input_to_check" == "server" ]; then
-        echo -e "Performing Post Sanity Server Checks on $input_to_check now ..."
-        server-sanity-checks "$input_to_check";
+        echo -e "Performing Post Sanity Server Checks on $input now ..."
+        server-sanity-checks "$input";
     else
-        echo -e "Performing Post Sanity Site Checks on $input_to_check now ..."
-        site-sanity-check "$input_to_check";
+        echo -e "Performing Post Sanity Site Checks on $input now ..."
+        site-sanity-check "$input";
     fi
 }
 
