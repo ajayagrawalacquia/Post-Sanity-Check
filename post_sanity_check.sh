@@ -111,7 +111,7 @@ site-sanity-check() {
 
     # Web Checks
     echo -e "Performing Web Check now ..."
-    site-checkwebs $site 2> /dev/null > $OPSTMP/webchecktemp$site | tee /dev/null
+    site-checkwebs $site | grep web 2> /dev/null > $OPSTMP/webchecktemp$site | tee /dev/null
     check_output=$(cat $OPSTMP/webchecktemp$site)
     # check_output=$(site-checkwebs $site | grep web-)
     echo -e "$check_output"
