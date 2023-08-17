@@ -65,7 +65,7 @@ is_site_or_server() {
 
 
 # - - - - - - - - - - Site Checks - - - - - - - - - -
-site-sanity-check() {
+site-sanity-checks() {
     local site="$1"
 
     # Gluster Checks
@@ -177,7 +177,7 @@ main() {
         server-sanity-checks "$input";
     else
         echo -e "- - - - - - - - - - Performing Post Sanity Site Checks on $input now - - - - - - - - - -"
-        site-sanity-check "$input";
+        site-sanity-checks "$input";
     fi
 }
 
