@@ -80,7 +80,7 @@ site-sanity-check() {
 
     # Site Check
     echo -e "\n[ $(date) ] - Doing site-check now ..."
-    check_output=$(site-check $site 2> /dev/null); echo -e "$check_output"
+    check_output=$(site-check $site 2> /dev/null);
     if [[ $(echo "$check_output" | grep -i "success") ]]; then
         echo -e "Site Check looks OK"
     else
