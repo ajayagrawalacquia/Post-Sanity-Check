@@ -15,6 +15,19 @@ fqual ()
 }
 
 
+check_high_load() {
+    while IFS= read -r line; do
+        load_average=$(echo "$line" | grep -o 'load average: [0-9.]*')
+        
+        if [ -n "$load_average" ]; then
+            numeric_load=$(echo "$load_average" | awk '{print $3}')
+            if (( $(echo "$numeric_load > 1.0" | bc -l) )); then
+                echo "$line"
+            fi
+        fi
+    done <<< "$1"
+}
+
 
 
 
@@ -48,6 +61,7 @@ site-sanity-check() {
     fi
 
     # Site Check
+    echo -e "Doing site-check now ..."
     check_output=$(site-check $site)
     if [[ $(echo "$check_output" | grep -i "success") ]]; then
         echo -e "Site Check looks OK"
@@ -57,6 +71,7 @@ site-sanity-check() {
     fi
 
     # Service Checks for Individual Servers
+    echo -e "Performing Service Checks for Individual Servers on $site"
     check_output=$(sv-checkservices $(ah-server list site:$SITE | perl -pe 's/\n/$1,/');)
     if [[ $(echo "$check_output" | grep -i "not running") ]]; then
         echo -e "Something's Wrong ! Details below:"
@@ -66,7 +81,9 @@ site-sanity-check() {
     fi
 
     # Individual Server Load Details
-    site-getload $site
+    echo -e "Checking Load of Individual servers on the stack now ..."
+    check_output=$(site-getload $site)
+    check_high_load "$check_output"
 
     # Web Checks
     check_output=$(site-checkwebs $site | grep web)
