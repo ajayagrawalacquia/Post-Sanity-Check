@@ -69,7 +69,7 @@ site-sanity-check() {
     local site="$1"
 
     # Gluster Checks
-    echo -e "Checking Gluster ..."
+    echo -e "[ $(date) ] - Checking Gluster ..."
     check_output=$(site-checkgluster $site)
     if [[ $(echo "$check_output" | grep -i "failed") ]]; then
         echo -e "Something's Wrong with Gluster ! Details below:"
@@ -79,7 +79,7 @@ site-sanity-check() {
     fi
 
     # Site Check
-    echo -e "Doing site-check now ..."
+    echo -e "\n[ $(date) ] - Doing site-check now ..."
     check_output=$(site-check $site)
     if [[ $(echo "$check_output" | grep -i "success") ]]; then
         echo -e "Site Check looks OK"
@@ -89,7 +89,7 @@ site-sanity-check() {
     fi
 
     # Service Checks for Individual Servers
-    echo -e "Performing Service Checks for Individual Servers on $site"
+    echo -e "\n[ $(date) ] - Performing Service Checks for Individual Servers on $site"
     check_output=$(sv-checkservices $(ah-server list site:$SITE | perl -pe 's/\n/$1,/');)
     if [[ $(echo "$check_output" | grep -i "not running") ]]; then
         echo -e "Something's Wrong ! Details below:"
@@ -99,7 +99,7 @@ site-sanity-check() {
     fi
 
     # Individual Server Load Details
-    echo -e "Checking Load of Individual servers on the stack now ..."
+    echo -e "\n[ $(date) ] - Checking Load of Individual servers on the stack now ..."
     check_output=$(site-getload $site)
     load_outputs=$(check_high_load "$check_output")
     if [ -n "$load_outputs" ]; then
@@ -110,7 +110,7 @@ site-sanity-check() {
 
 
     # Web Checks
-    echo -e "Performing Web Check now ..."
+    echo -e "\n[ $(date) ] - Performing Web Check now ..."
     site-checkwebs $site | grep web 2> /dev/null > $OPSTMP/webchecktemp$site | tee /dev/null
     check_output=$(cat $OPSTMP/webchecktemp$site)
     nos_of_webs=$(esl2 $site | grep "web_rotation_status: 1000" | wc -l)
@@ -124,6 +124,7 @@ site-sanity-check() {
 
 
     # Web Rotation Status
+    echo -e "\n[ $(date) ] - Checking Web Rotation Status now ..."
     check_output=$(site-getwebrotationstatus $site)
     webs_in_rotation=$(echo -e "$check_output" | grep 1000 | awk '{print $1}')
     nos_webs_in_rotation=$(echo -e "$webs_in_rotation" | wc -l)
@@ -137,6 +138,7 @@ site-sanity-check() {
 
 
     # Monitoring Status
+    echo -e "\n[ $(date) ] - Checking Monitoring Status now ..."
     check_output=$(site-mon get $site)
     if [[ $(echo "$check_output" | grep -i "absent") ]]; then
         echo -e "$check_output"
@@ -171,10 +173,10 @@ main() {
     input_to_check=$(is_site_or_server "$input")
 
     if [ "$input_to_check" == "server" ]; then
-        echo -e "Performing Post Sanity Server Checks on $input now ..."
+        echo -e "- - - - - - - - - - Performing Post Sanity Server Checks on $input now - - - - - - - - - -"
         server-sanity-checks "$input";
     else
-        echo -e "Performing Post Sanity Site Checks on $input now ..."
+        echo -e "- - - - - - - - - - Performing Post Sanity Site Checks on $input now - - - - - - - - - -"
         site-sanity-check "$input";
     fi
 }
