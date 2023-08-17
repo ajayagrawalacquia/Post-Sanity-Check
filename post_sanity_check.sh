@@ -1,3 +1,25 @@
+# some supporting functions
+fqual ()
+{
+    if [ "$FACCT_TYPE" != "managed" ]; then
+        echo "You're not currently in a managed account.";
+        return 1;
+    fi;
+    FHOST=$1;
+    shift;
+    if [ "$FHOST" = "master" ]; then
+        echo -n "$FHOST.e.$FIELDS_STAGE.$FIELDS_MASTER_DOMAIN";
+    else
+        echo -n "$FHOST.$FIELDS_STAGE.$FIELDS_SERVER_DOMAIN";
+    fi
+}
+
+
+
+
+
+
+
 # Check if the Input is site or Server
 is_site_or_server() {
     local input="$1"
