@@ -103,7 +103,7 @@ site-sanity-check() {
     check_output=$(site-getload $site)
     load_outputs=$(check_high_load "$check_output")
     if [ -n "$load_outputs" ]; then
-        echo -e "High load found on $site. Details below:\n$load_outputs"
+        echo -e "Load greater than 1 found on some servers. Details below:\n$load_outputs"
     else
         echo "Load for the whole looks fine."
     fi
