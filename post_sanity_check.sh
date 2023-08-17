@@ -16,7 +16,7 @@ site-sanity-check() {
     local site="$1"
 
     # Gluster Checks
-    echo -e "[ $(date) ] - Checking Gluster ..."
+    echo -e "Checking Gluster ..."
     site-checkgluster $site;
 
     # Site Check
