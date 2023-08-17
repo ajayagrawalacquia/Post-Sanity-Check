@@ -121,12 +121,37 @@ site-sanity-check() {
         echo "Something's Wrong Here. Details Below:"
         echo -e "$check_output"
     fi
+
+
+    # Web Rotation Status
+    check_output=$(site-getwebrotationstatus $site)
+    webs_in_rotation=$(echo -e "$check_output" | grep 1000 | awk '{print $1}')
+    nos_webs_in_rotation=$(echo -e "$webs_in_rotation" | wc -l)
+
+    webs_out_of_rotation=$(echo -e "$check_output" | grep 1001 | awk '{print $1}')
+    nos_webs_out_of_rotation=$(echo -e "$webs_out_of_rotation" | wc -l)
+    
+
+    echo -e "$nos_webs_in_rotation Web Servers are in Rotation: $(echo -e "$webs_in_rotation" | tr '\n' ',' | sed 's/.$//')\n$nos_webs_out_of_rotation Web Servers are Out of Rotation: $(echo -e "$webs_out_of_rotation" | tr '\n' ',' | sed 's/.$//')"
+
+
+
+    # Monitoring Status
+    check_output=$(site-mon get $site)
+    if [[ $(echo "$check_output" | grep -i "absent") ]]; then
+        echo -e "$check_output"
+        echo -e "Looks like Monitoring is not enabled for $site. Use site-monenable $site to enable Monitoring if you have missed."
+    else
+        echo -e "Monitoring is enabled for $site.";
+    fi
+
+
 }
 
 
 
-# Web Rotation Status
-# Monitoring Status
+
+
 
 # - - - - - - - - - - Server Checks - - - - - - - - - -
 # Monitoring Status
