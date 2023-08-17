@@ -83,9 +83,9 @@ site-sanity-check() {
     # Individual Server Load Details
     echo -e "Checking Load of Individual servers on the stack now ..."
     check_output=$(site-getload $site)
-    check_high_load "$check_output"
-    if [ -n "$check_output" ]; then
-        echo -e "High load found on $site. Details below:\n$check_output"
+    load_outputs=$(check_high_load "$check_output")
+    if [ -n "$load_outputs" ]; then
+        echo -e "High load found on $site. Details below:\n$load_outputs"
     else
         echo "Load for the whole looks fine."
     fi
