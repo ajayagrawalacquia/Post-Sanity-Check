@@ -14,6 +14,18 @@ fqual ()
     fi
 }
 
+fssh ()
+{
+    if [ "$FACCT_TYPE" != "managed" ]; then
+        echo "You're not currently in a managed account.";
+        return 1;
+    fi;
+    FHOST=$1;
+    shift;
+    FUSER=$(get_fuser);
+    ssh -A -p 40506 -i $FIELDS_SSH_ID -o StrictHostKeyChecking=no $FUSER@`fqual $FHOST` $@
+}
+
 
 check_high_load() {
     while IFS= read -r line; do
