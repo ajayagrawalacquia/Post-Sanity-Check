@@ -84,6 +84,4 @@ main() {
 }
 
 
-[ $# -lt 1 ] && echo "Usage: ${FUNCNAME[0]} SITE/SERVER" && return 0;
-local user_input=$1;
-main "$user_input";
+main "$1";
