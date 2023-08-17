@@ -84,8 +84,15 @@ site-sanity-check() {
     echo -e "Checking Load of Individual servers on the stack now ..."
     check_output=$(site-getload $site)
     check_high_load "$check_output"
+    if [ -n "$check_output" ]; then
+        echo -e "High load found on $site. Details below:\n$check_output"
+    else
+        echo "Load for the whole looks fine."
+    fi
+
 
     # Web Checks
+    echo -e "Performing Web Check now ..."
     check_output=$(site-checkwebs $site | grep web)
     nos_of_webs=$(esl $site | grep web- | wc -l)
     nos_of_success=$(echo "$check_output" | tr '[:upper:]' '[:lower:]' | grep -o 'success' | wc -l)
