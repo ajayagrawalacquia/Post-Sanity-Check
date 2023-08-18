@@ -124,6 +124,7 @@ site-sanity-checks() {
         echo "Something's Wrong Here. Details Below:"
         echo -e "$check_output"
     fi
+    rm $OPSTMP/webchecktemp$site
 
 
     # Web Rotation Status
@@ -134,9 +135,24 @@ site-sanity-checks() {
 
     webs_out_of_rotation=$(echo -e "$check_output" | grep 1001 | awk '{print $1}')
     nos_webs_out_of_rotation=$(echo -e "$webs_out_of_rotation" | wc -l)
+
+    echo "" > $OPSTMP/webchecktemp$site
+    for s in $webs_out_of_rotation
+    do
+        oob_or_not=$(ah-server list $s -c tags)
+        if [[ $(echo "$oob_or_not" | grep -i "oob") ]]; then
+            echo -e "$s" >> $OPSTMP/webchecktemp$site
+        fi
+    done
     
 
-    echo -e "$nos_webs_in_rotation Web Servers are in Rotation: $(echo -e "$webs_in_rotation" | tr '\n' ',' | sed 's/.$//')\n$nos_webs_out_of_rotation Web Servers are Out of Rotation: $(echo -e "$webs_out_of_rotation" | tr '\n' ',' | sed 's/.$//')"
+    if [ -s "$filename" ]; then
+        echo -e "$(cat $OPSTMP/webchecktemp$site | wc -l) Web Servers which are NOT tagged as OOB and are NOT in Rotation: $(cat $OPSTMP/webchecktemp$site | tr '\n' ',' | sed 's/.$//')"
+    else
+        echo -e "Web Rotation Checks Passed."
+    fi
+
+    
 
 
 
