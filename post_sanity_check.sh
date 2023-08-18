@@ -187,6 +187,22 @@ site-sanity-checks() {
 
 
 
+    # Memcache Service Status on Individual Web Servers
+    echo -e "\n[ $(date) ] - Checking Memcache Status for Individual Web Servers now ..."
+    webs=$(ah-server list site:$site | grep web)
+    for w in $webs; do
+        status=$(ah-server get $w | grep memcache_service_status | awk '{print $2}')
+        if [ "$status" -ne 2 ]; then
+            echo -e "$w" >> $OPSTMP/memcache_check_Server_for_$site
+        fi
+    done
+
+    if [ -s "$OPSTMP/memcache_check_Server_for_$site" ]; then
+        echo -e "$(cat $OPSTMP/memcache_check_Server_for_$site | wc -l) Web Server(s) have Memcache Disabled: $(cat $OPSTMP/memcache_check_Server_for_$site | tr '\n' ',' | sed 's/.$//')"
+    else
+        echo -e "Memcache is Enabled for all the Web Servers."
+    fi
+
 }
 
 
