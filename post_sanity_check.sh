@@ -173,7 +173,6 @@ site-sanity-checks() {
     rm $OPSTMP/monitoring_check_Server_for_$site
     for s in $(ah-server list site:$site)
     do 
-        echo -e "Checking $s"
         status=$(ah-server list $s -c monitoring_status | awk '{print $2}')
         if [ "$status" -ne 2 ]; then
             echo -e "$s" >> $OPSTMP/monitoring_check_Server_for_$site
