@@ -203,6 +203,8 @@ site-sanity-checks() {
         echo -e "Memcache is Enabled for all the Web Servers."
     fi
 
+    rm $OPSTMP/memcache_check_Server_for_$site
+
 }
 
 
