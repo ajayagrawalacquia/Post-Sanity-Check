@@ -36,18 +36,33 @@ get_fuser ()
 }
 
 
-check_high_load() {
-    while IFS= read -r line; do
-        load_average=$(echo "$line" | grep -o 'load average: [0-9.]*')
+# check_high_load() {
+#     while IFS= read -r line; do
+#         load_average=$(echo "$line" | grep -o 'load average: [0-9.]*')
         
-        if [ -n "$load_average" ]; then
-            numeric_load=$(echo "$load_average" | awk '{print $3}')
-            if (( $(echo "$numeric_load > 1.0" | bc -l) )); then    # assuming we need to check if load is above 1.0
-                echo "$line"
-            fi
-        fi
-    done <<< "$1"
+#         if [ -n "$load_average" ]; then
+#             numeric_load=$(echo "$load_average" | awk '{print $3}')
+#             if (( $(echo "$numeric_load > 1.0" | bc -l) )); then    # assuming we need to check if load is above 1.0
+#                 echo "$line"
+#             fi
+#         fi
+#     done <<< "$1"
+# }
+
+
+check_high_load() {
+  local input="$1"
+
+  while IFS= read -r line; do
+    load_avg=$(echo "$line" | grep -o 'load average: [0-9.]*%' | awk '{print $3}' | tr -d '%')
+    
+    if (( $(echo "$load_avg > 5" | bc -l) )); then
+      echo "$line"
+    fi
+  done <<< "$input"
 }
+
+
 
 
 
@@ -100,10 +115,10 @@ site-sanity-checks() {
 
     # Individual Server Load Details
     echo -e "\n[ $(date) ] - Checking Load of Individual servers on the stack now ..."
-    check_output=$(site-getload $site)
+    check_output=$(site-getloadpct $site)
     load_outputs=$(check_high_load "$check_output")
     if [ -n "$load_outputs" ]; then
-        echo -e "Load greater than 1 found on some servers. Details below:\n$load_outputs"
+        echo -e "High load found on some server(s). Details below:\n$load_outputs"
     else
         echo "Load for the whole looks fine."
     fi
