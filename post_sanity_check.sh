@@ -145,7 +145,6 @@ site-sanity-checks() {
         fi
     done
     
-
     if [ -s "$OPSTMP/webchecktemp$site" ]; then
         echo -e "$(cat $OPSTMP/webchecktemp$site | wc -l) Web Servers which are NOT tagged as OOB and are NOT in Rotation: $(cat $OPSTMP/webchecktemp$site | tr '\n' ',' | sed 's/.$//')"
     else
@@ -157,8 +156,8 @@ site-sanity-checks() {
 
 
 
-    # Monitoring Status
-    echo -e "\n[ $(date) ] - Checking Monitoring Status now ..."
+    # Monitoring Status for Site
+    echo -e "\n[ $(date) ] - Checking Monitoring Status for $site now ..."
     check_output=$(site-mon get $site)
     if [[ $(echo "$check_output" | grep -i "absent") ]]; then
         echo -e "$check_output"
@@ -166,6 +165,28 @@ site-sanity-checks() {
     else
         echo -e "Monitoring is enabled for $site.";
     fi
+
+
+
+    # Monitoring Status for Individual Servers
+    echo -e "\n[ $(date) ] - Checking Monitoring Status for Individual Servers on $site"
+
+    check_output=$(sv-checkservices $(ah-server list site:$SITE)
+    for s in $(ah-server list site:$SITE)
+    do 
+        status=$(ah-server list $s -c monitoring_status | awk '{print $2}';)
+        if [ "$status" -ne 2 ]; then
+            echo -e "$s" >> $OPSTMP/monitoring_check_Server_for_$site
+        fi
+    done
+
+    if [ -s "$OPSTMP/monitoring_check_Server_for_$site" ]; then
+        echo -e "$(cat $OPSTMP/monitoring_check_Server_for_$site | wc -l) Servers are NOT being Monitored: $(cat $OPSTMP/monitoring_check_Server_for_$site | tr '\n' ',' | sed 's/.$//')"
+    else
+        echo -e "Individual Server Monitoring Checks Passed.."
+    fi
+    rm $OPSTMP/monitoring_check_Server_for_$site
+
 
 
 }
