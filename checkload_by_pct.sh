@@ -3,7 +3,7 @@ check_high_load_by_pct() {
     webloads_path=$1
     for line in $(cat $webloads); do
         load=$(echo -e "$line" | awk '{print $11}' | tr -d '%' | bc -l);
-        if [[ load > 2.0 ]];
+        if [[ load > 2.0 ]]; then
             echo -e "$line"
         fi
     done
