@@ -51,20 +51,13 @@ check_high_load() {
 
 
 
-
 check_high_load_by_pct() {
     webloads="$1"
-    echo -e "FilePath is $webloads"
-
-    grep -E 'load average: [0-9]+(\.[0-9]+)?%' "$webloads" |
-    while IFS= read -r line; do
-        echo -e "Checking $line"
-        # Extract the load percentage from the line
-        load=$(echo "$line" | grep -oE 'load average: [0-9]+(\.[0-9]+)?%' | grep -oE '[0-9]+(\.[0-9]+)?%' | tr -d '%')
-        echo -e "$line is $load"
-        # Check if load is not empty and is greater than 10%
-        if [ -n "$load" ] && [ $(echo "$load" | sed 's/%$//' | awk '{if ($1 > 10) print 1; else print 0}') -eq 1 ]; then
-            echo "$line"
+    echo "$webloads" | sed -r 's/\x1B\[[0-9;]*[mK]//g' | while IFS= read -r line; do
+        load=$(echo "$line" | awk '{print $11}' | tr -d '%')
+        rounded_load=$(ruby -e "puts $load.to_f.round")
+        if [ $rounded_load -gt 10 ]; then
+            echo -e "$line"
         fi
     done
 }
@@ -133,8 +126,12 @@ site-sanity-checks() {
     # Individual Server Load Details by Percentage
     echo -e "\n[ $(date) ] - Checking Load of Individual servers by Percentage on the stack now ..."
     check_output=$(site-getloadpct $site | sed '1d')
-    echo -e "$check_output" > $OPSTMP/get_load_pct_$site
-    load_outputs=$(check_high_load_by_pct "$OPSTMP/get_load_pct_$site")
+    load_outputs=$(check_high_load_by_pct "$check_output")
+    if [ -n "$load_outputs" ]; then
+        echo -e "High load found on some server(s). Details below:\n$load_outputs"
+    else
+        echo "Load for the whole stack looks fine."
+    fi
 
 
 
