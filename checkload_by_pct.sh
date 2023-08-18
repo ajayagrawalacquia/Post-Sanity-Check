@@ -1,6 +1,7 @@
 
 check_high_load_by_pct() {
     webloads_path=$1
+    echo $webloads_path
     for line in $(cat $webloads); do
         load=$(echo -e "$line" | awk '{print $11}' | tr -d '%' | bc -l);
         if [[ load > 2.0 ]]; then
