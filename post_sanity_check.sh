@@ -171,7 +171,7 @@ site-sanity-checks() {
     # Monitoring Status for Individual Servers
     echo -e "\n[ $(date) ] - Checking Monitoring Status for Individual Servers on $site"
 
-    check_output=$(sv-checkservices $(ah-server list site:$SITE)
+    check_output=$(sv-checkservices $(ah-server list site:$SITE))
     for s in $(ah-server list site:$SITE)
     do 
         status=$(ah-server list $s -c monitoring_status | awk '{print $2}';)
