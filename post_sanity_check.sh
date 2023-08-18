@@ -123,8 +123,9 @@ site-sanity-checks() {
     else
         echo "Something's Wrong Here. Details Below:"
         echo -e "$check_output"
+        rm $OPSTMP/webchecktemp$site
     fi
-    rm $OPSTMP/webchecktemp$site
+    
 
 
     # Web Rotation Status
