@@ -51,15 +51,15 @@ get_fuser ()
 
 
 check_high_load() {
-  local input="$1"
+    while IFS= read -r line; do
+        load_average=$(echo "$line" | grep -o 'load average: [0-9.]*%' | awk '{print $3}' | tr -d '%')
 
-  while IFS= read -r line; do
-    load_avg=$(echo "$line" | grep -o 'load average: [0-9.]*%' | awk '{print $3}' | tr -d '%')
-    
-    if (( $(echo "$load_avg > 5" | bc -l) )); then
-      echo "$line"
-    fi
-  done <<< "$input"
+        if [ -n "$load_average" ]; then
+            if [ "$(echo "$load_average > 5.0" | bc -l)" -eq 1 ]; then
+                echo "$line"
+            fi
+        fi
+    done <<< "$1"
 }
 
 
