@@ -5,7 +5,7 @@ check_high_load_by_pct() {
 
     while IFS= read -r line; do
         echo -e "Checking $line"
-        load=$(echo -e $line | awk '{print $11}' | tr -d '%' | bc -l)
+        load="$(echo $line | awk '{print $11}' | tr -d '%' | bc -l)"
         echo -e "$load"  
     done < $webloads_path
 }
