@@ -108,7 +108,7 @@ site-sanity-checks() {
     if [ -n "$load_outputs" ]; then
         echo -e "High load found on some server(s). Details below:\n$load_outputs"
     else
-        echo "Load for the whole looks fine."
+        echo "Load for the whole stack looks fine."
     fi
 
 
