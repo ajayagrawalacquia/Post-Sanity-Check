@@ -171,7 +171,7 @@ site-sanity-checks() {
 
 
     # Monitoring Status for Individual Servers
-    echo -e "\n[ $(date) ] - Checking Monitoring Status for Individual Servers on $site"
+    echo -e "\n[ $(date) ] - Checking Monitoring Status for Individual Servers on $site now..."
     for s in $(ah-server list site:$site)
     do 
         status=$(ah-server list $s -c monitoring_status | awk '{print $2}')
@@ -191,7 +191,7 @@ site-sanity-checks() {
 
 
     # Memcache Service Status on Individual Web Servers
-    echo -e "\n[ $(date) ] - Checking Memcache Status for Individual Web Servers now ..."
+    echo -e "\n[ $(date) ] - Checking Memcache Status for Individual Web Servers now..."
     webs=$(ah-server list site:$site | grep web)
     for w in $webs; do
         status=$(ah-server get $w | grep memcache_service_status | awk '{print $2}')
