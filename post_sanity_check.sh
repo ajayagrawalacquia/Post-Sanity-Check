@@ -128,6 +128,7 @@ site-sanity-checks() {
 
 
     # Web Rotation Status
+    touch $OPSTMP/webchecktemp$site
     echo -e "\n[ $(date) ] - Checking Web Rotation Status now ..."
     check_output=$(site-getwebrotationstatus $site)
     webs_in_rotation=$(echo -e "$check_output" | grep 1000 | awk '{print $1}')
@@ -150,6 +151,7 @@ site-sanity-checks() {
     else
         echo -e "Web Rotation Checks Passed."
     fi
+    rm $OPSTMP/webchecktemp$site
 
     
 
