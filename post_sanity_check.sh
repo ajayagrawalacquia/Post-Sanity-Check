@@ -91,7 +91,7 @@ site-sanity-checks() {
     fi
 
     # Service Checks for Individual Servers
-    echo -e "\n[ $(date) ] - Performing Service Checks for Individual Servers on $site"
+    echo -e "\n[ $(date) ] - Performing Service Checks for Individual Servers on $site now ..."
     check_output=$(sv-checkservices $(ah-server list site:$SITE | perl -pe 's/\n/$1,/');)
     if [[ $(echo "$check_output" | grep -i "not running") ]]; then
         echo -e "Something's Wrong ! Details below:"
