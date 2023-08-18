@@ -147,10 +147,11 @@ site-sanity-checks() {
     
     if [ -s "$OPSTMP/webchecktemp$site" ]; then
         echo -e "$(cat $OPSTMP/webchecktemp$site | wc -l) Web Servers which are NOT tagged as OOB and are NOT in Rotation: $(cat $OPSTMP/webchecktemp$site | tr '\n' ',' | sed 's/.$//')"
+        rm $OPSTMP/webchecktemp$site
     else
         echo -e "Web Rotation Checks Passed."
     fi
-    rm $OPSTMP/webchecktemp$site
+    
 
     
 
