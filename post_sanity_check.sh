@@ -36,20 +36,6 @@ get_fuser ()
 }
 
 
-check_high_load() {
-    while IFS= read -r line; do
-        load_average=$(echo "$line" | grep -o 'load average: [0-9.]*')
-        
-        if [ -n "$load_average" ]; then
-            numeric_load=$(echo "$load_average" | awk '{print $3}')
-            if (( $(echo "$numeric_load > 2.0" | bc -l) )); then    # assuming we need to check if load is above 1.0
-                echo "$line"
-            fi
-        fi
-    done <<< "$1"
-}
-
-
 
 check_high_load_by_pct() {
     webloads="$1"
@@ -110,17 +96,6 @@ site-sanity-checks() {
     else
         echo -e "Services looks OK"
     fi
-
-    # # Individual Server Load Details
-    # echo -e "\n[ $(date) ] - Checking Load of Individual servers on the stack now ..."
-    # check_output=$(site-getload $site)
-    # # check_output=$(echo -e "$check_output" | sed '1d')
-    # load_outputs=$(check_high_load "$check_output")
-    # if [ -n "$load_outputs" ]; then
-    #     echo -e "High load found on some server(s). Details below:\n$load_outputs"
-    # else
-    #     echo "Load for the whole stack looks fine."
-    # fi
 
 
     # Individual Server Load Details by Percentage
