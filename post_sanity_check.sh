@@ -123,8 +123,8 @@ site-sanity-checks() {
     else
         echo "Something's Wrong Here. Details Below:"
         echo -e "$check_output"
-        rm $OPSTMP/webchecktemp$site
     fi
+    rm $OPSTMP/webchecktemp$site
     
 
 
@@ -132,8 +132,8 @@ site-sanity-checks() {
     touch $OPSTMP/webchecktemp$site
     echo -e "\n[ $(date) ] - Checking Web Rotation Status now ..."
     check_output=$(site-getwebrotationstatus $site)
-    webs_in_rotation=$(echo -e "$check_output" | grep 1000 | awk '{print $1}')
-    nos_webs_in_rotation=$(echo -e "$webs_in_rotation" | wc -l)
+    # webs_in_rotation=$(echo -e "$check_output" | grep 1000 | awk '{print $1}')
+    # nos_webs_in_rotation=$(echo -e "$webs_in_rotation" | wc -l)
 
     webs_out_of_rotation=$(echo -e "$check_output" | grep 1001 | awk '{print $1}')
     nos_webs_out_of_rotation=$(echo -e "$webs_out_of_rotation" | wc -l)
