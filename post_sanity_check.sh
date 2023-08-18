@@ -102,8 +102,8 @@ site-sanity-checks() {
 
     # Individual Server Load Details
     echo -e "\n[ $(date) ] - Checking Load of Individual servers on the stack now ..."
-    check_output=$(site-getloadpct $site)
-    check_output=$(echo -e "$check_output" | sed '1d')
+    check_output=$(site-getload $site)
+    # check_output=$(echo -e "$check_output" | sed '1d')
     load_outputs=$(check_high_load "$check_output")
     if [ -n "$load_outputs" ]; then
         echo -e "High load found on some server(s). Details below:\n$load_outputs"
