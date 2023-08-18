@@ -180,10 +180,11 @@ site-sanity-checks() {
 
     if [ -s "$OPSTMP/monitoring_check_Server_for_$site" ]; then
         echo -e "$(cat $OPSTMP/monitoring_check_Server_for_$site | wc -l) Server(s) are/is NOT being Monitored: $(cat $OPSTMP/monitoring_check_Server_for_$site | tr '\n' ',' | sed 's/.$//')"
+        rm $OPSTMP/monitoring_check_Server_for_$site
     else
         echo -e "All the Servers on $site are being Monitored."
     fi
-    rm $OPSTMP/monitoring_check_Server_for_$site
+
 
 
 
@@ -199,11 +200,11 @@ site-sanity-checks() {
 
     if [ -s "$OPSTMP/memcache_check_Server_for_$site" ]; then
         echo -e "$(cat $OPSTMP/memcache_check_Server_for_$site | wc -l) Web Server(s) have Memcache Disabled: $(cat $OPSTMP/memcache_check_Server_for_$site | tr '\n' ',' | sed 's/.$//')"
+        rm $OPSTMP/memcache_check_Server_for_$site
     else
         echo -e "Memcache is Enabled for all the Web Servers."
     fi
 
-    rm $OPSTMP/memcache_check_Server_for_$site
 
 }
 
