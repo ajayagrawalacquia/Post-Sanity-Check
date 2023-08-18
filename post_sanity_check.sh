@@ -170,7 +170,6 @@ site-sanity-checks() {
 
     # Monitoring Status for Individual Servers
     echo -e "\n[ $(date) ] - Checking Monitoring Status for Individual Servers on $site"
-    rm $OPSTMP/monitoring_check_Server_for_$site
     for s in $(ah-server list site:$site)
     do 
         status=$(ah-server list $s -c monitoring_status | awk '{print $2}')
