@@ -36,26 +36,13 @@ get_fuser ()
 }
 
 
-# check_high_load() {
-#     while IFS= read -r line; do
-#         load_average=$(echo "$line" | grep -o 'load average: [0-9.]*')
-        
-#         if [ -n "$load_average" ]; then
-#             numeric_load=$(echo "$load_average" | awk '{print $3}')
-#             if (( $(echo "$numeric_load > 1.0" | bc -l) )); then    # assuming we need to check if load is above 1.0
-#                 echo "$line"
-#             fi
-#         fi
-#     done <<< "$1"
-# }
-
-
 check_high_load() {
     while IFS= read -r line; do
-        load_average=$(echo "$line" | grep -o 'load average: [0-9.]*%' | awk '{print $3}' | tr -d '%')
-
+        load_average=$(echo "$line" | grep -o 'load average: [0-9.]*')
+        
         if [ -n "$load_average" ]; then
-            if [ "$(echo "$load_average > 5.0" | bc -l)" -eq 1 ]; then
+            numeric_load=$(echo "$load_average" | awk '{print $3}')
+            if (( $(echo "$numeric_load > 1.0" | bc -l) )); then    # assuming we need to check if load is above 1.0
                 echo "$line"
             fi
         fi
@@ -116,6 +103,7 @@ site-sanity-checks() {
     # Individual Server Load Details
     echo -e "\n[ $(date) ] - Checking Load of Individual servers on the stack now ..."
     check_output=$(site-getloadpct $site)
+    check_output=$(echo -e "$check_output" | sed '1d')
     load_outputs=$(check_high_load "$check_output")
     if [ -n "$load_outputs" ]; then
         echo -e "High load found on some server(s). Details below:\n$load_outputs"
@@ -164,6 +152,11 @@ site-sanity-checks() {
 
 
 }
+
+
+
+
+# Command to check tags - "ah-server list web-46562 -c tags"
 
 
 
