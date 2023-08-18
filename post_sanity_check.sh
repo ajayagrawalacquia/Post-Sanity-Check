@@ -139,7 +139,7 @@ site-sanity-checks() {
     for s in $webs_out_of_rotation
     do
         oob_or_not=$(ah-server list $s -c tags)
-        if [[ $(echo "$oob_or_not" | grep -i "oob") ]]; then
+        if [[ "$oob_or_not" != *"oob"* ]]; then
             echo -e "$s" >> $OPSTMP/webchecktemp$site
         fi
     done
