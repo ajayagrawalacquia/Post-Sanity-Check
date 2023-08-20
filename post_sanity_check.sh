@@ -284,23 +284,23 @@ server-sanity-checks () {
 
 
 
+    # No Extra Volumes are left (eg no extra /mnt/resize-wf-* type vols)
+    echo -e "\n[ $(date) ] - Checking if any Resize Volumes are attached on $server..."
+    vollist_output=$(sv-vollist $server)
+    if [[ "$vollist_output" == *"resize"* ]]; then
+        echo -e "Looks like a Resize Volume is attached to $server. Details below:"
+        echo -e "$vollist_output | grep -i 'resize'"
+    else
+        echo -e "Volumes looks OK. No Resize Workflow Volumes attached."
+    fi
     
-
-    # for site in $all_sites; do
-    #     site_check=$(site-check $site)
-    #     if [[ "$site_check" == *"success"* ]]; then
-    #         echo "success"
-    #     else
-    #         echo "failed"
-    #     fi
-    # done
     
 
 }
 
 
 
-# No Extra Volumes are left (eg no extra /mnt/resize-wf-* type vols)
+
 # Server Status
 # Server Load
 # sv-getstatus Output (as it gives some neat outputs)
