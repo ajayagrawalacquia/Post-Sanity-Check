@@ -54,7 +54,7 @@ check_space_filled() {
     df_output="$1"
     while IFS= read -r line; do
         percet_filled=$(echo -e "$line" | awk '{print $5}' | tr -d '%')
-        if [[ $percet_filled -gt 30 ]]; then
+        if [[ $percet_filled -gt 85 ]]; then    # Assuming if we notify before 90%, the customer will have some time to do clean up.
             echo -e "$line"
         fi
     done <<< "$df_output"
