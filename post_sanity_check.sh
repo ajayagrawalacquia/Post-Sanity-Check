@@ -282,11 +282,6 @@ server-sanity-checks () {
         echo -e "$nos_failed_sites / $nos_all_sites Site(s) on $server Failed Site Check - $failed_sites_list_csv"
     fi
 
-    echo -e ""
-
-    
-
-
 
 
     
