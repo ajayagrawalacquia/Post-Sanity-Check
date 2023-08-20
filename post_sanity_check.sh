@@ -50,6 +50,17 @@ check_high_load_by_pct() {
 
 
 
+check_space_filled() {
+    df_output="$1"
+    while IFS= read -r line; do
+        percet_filled=$(echo -e "$line" | awk '{print $5}' | tr -d '%')
+        if [[ $percet_filled -gt 30 ]]; then
+            echo -e "$line"
+        fi
+    done <<< "$df_output"
+}
+
+
 # check_failed_sites() {
 #     sites_list="$1"
 #     echo "$sites_list" | while IFS= read -r line; do
@@ -318,6 +329,17 @@ server-sanity-checks () {
         echo "Server Load looks fine"
     fi
 
+    # Space Checks
+    echo -e "\n[ $(date) ] - Performing Space Checks..."
+    server_df_output=$(sv-df $server 2> /dev/null | sed '1d' | sed '$d')
+    check_output=$(check_space_filled "$server_df_output")
+    
+    if [ -z "$check_output" ]; then
+        echo "Space Check Passed."
+    else
+        echo "Mountpoints with more than 85% space filled detected. Details below:"
+        echo "$check_output"
+    fi
 
 }
 
