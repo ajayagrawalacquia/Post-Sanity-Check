@@ -259,14 +259,30 @@ server-sanity-checks () {
     # Site Check for all the sites on the server ? (I think this might get pretty long for some servers. But just noting it down here)
     echo -e "\n[ $(date) ] - Performing Site Check for all the Sites in $server..."
     all_sites=$(ah-site list on:$server)
-    # site_checks=$(for site in $all_sites; do
-    #     site_check=$(site-check $site 2> /dev/null)
-    #     if [[ "$site_check" == *"success"* ]]; then
-    #         echo "$site: success"
-    #     else
-    #         echo "$site: failed"
-    #     fi
-    # done)
+    all_sites_csv=$(echo -e "$all_sites" | tr '\n' ',' | rev | cut -c2- | rev)
+    nos_all_sites=$(echo -e "$all_sites" | wc -l)
+
+    site_checks=$(for site in $all_sites; do
+        site_check=$(site-check $site 2> /dev/null)
+        if [[ "$site_check" == *"success"* ]]; then
+            echo "$site : success"
+        else
+            echo "$site : failed"
+        fi
+    done)
+
+    failed_sites=$(echo "$site_checks" | awk -F ' : ' '/failed/{print $1}')
+
+    if [ -z "$failed_sites" ]; then
+        echo "All the Sites on $server Passed the Site Checks."
+    else
+        failed_sites_list=$(echo -e "$failed_sites" | awk '{print $1}' | rev | cut -c2- | rev)
+        failed_sites_list_csv=$(echo -e "$failed_sites" | awk '{print $1}' | rev | cut -c2- | rev | tr '\n' ',' | rev | cut -c2- | rev)
+        nos_failed_sites=$(echo -e "$failed_sites" | wc -l)
+        echo -e "$nos_failed_sites out of $nos_all_sites Site(s) on $server Failed Site Check - $failed_sites_list_csv"
+    fi
+
+    echo -e ""
 
     
 
