@@ -296,6 +296,7 @@ server-sanity-checks () {
 
 
     # Server Status
+    echo -e "\n[ $(date) ] - Checking Server Status now..."
     status=$(ah-server status $server);
     impaired_count=$(grep -o -i "impaired" <<< "$status" | wc -l);
     passed_count=$(grep -o -i "passed" <<< "$status" | wc -l);
