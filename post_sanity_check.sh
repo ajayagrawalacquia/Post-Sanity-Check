@@ -237,7 +237,7 @@ server-sanity-checks () {
     local server="$1"
 
     # Monitoring Status
-    echo -e "\n[ $(date) ] - Checking Monitoring Status Now ..."
+    echo -e "[ $(date) ] - Checking Monitoring Status Now ..."
     check_output=$(sv-monstatus $server | awk '{print $2}' | sed '1d');
     if [[ $(echo "$check_output" | grep -i "2") ]]; then
         echo -e "Monitoring is Enabled for $server"
