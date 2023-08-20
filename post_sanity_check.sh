@@ -289,12 +289,12 @@ server-sanity-checks () {
     vollist_output=$(sv-vollist $server)
     if [[ "$vollist_output" == *"resize"* ]]; then
         echo -e "Looks like a Resize Volume is attached to $server. Details below:"
-        echo -e "$vollist_output | grep -i 'resize'"
+        echo -e "$vollist_output" | grep -i 'resize'
     else
         echo -e "Volumes looks OK. No Resize Workflow Volumes attached."
     fi
     
-    
+
 
 }
 
