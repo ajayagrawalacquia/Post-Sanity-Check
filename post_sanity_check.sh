@@ -50,6 +50,19 @@ check_high_load_by_pct() {
 
 
 
+# check_failed_sites() {
+#     sites_list="$1"
+#     echo "$sites_list" | while IFS= read -r line; do
+#         status=$(echo "$line" | awk '{print $2}')
+#         if [ $status -eq 'failed' ]; then
+#             echo -e "$line"
+#         fi
+#     done
+# }
+
+
+
+
 # Check if the Input is site or Server
 is_site_or_server() {
     local input="$1"
@@ -221,11 +234,61 @@ site-sanity-checks() {
 # - - - - - - - - - - Server Checks - - - - - - - - - -
 
 server-sanity-checks () {
-    echo ""
+    local server="$1"
+
+    # Monitoring Status
+    echo -e "\n[ $(date) ] - Checking Monitoring Status Now ..."
+    check_output=$(sv-monstatus $server | awk '{print $2}' | sed '1d');
+    if [[ $(echo "$check_output" | grep -i "2") ]]; then
+        echo -e "Monitoring is Enabled for $server"
+    else
+        echo -e "Monitoring status is $check_output. Use sv-monenable $server to enable the monitoring."
+    fi
+
+
+    # Service Status
+    echo -e "\n[ $(date) ] - Checking Service Status Now ..."
+    check_output=$(sv-checkservices $server);
+    if [[ $(echo "$check_output" | grep -i "not running") ]]; then
+        echo -e "Something's Wrong ! Details below:"
+        echo -e "$check_output"
+    else
+        echo -e "Services looks OK"
+    fi
+
+    # Site Check for all the sites on the server ? (I think this might get pretty long for some servers. But just noting it down here)
+    echo -e "\n[ $(date) ] - Performing Site Check for all the Sites in $server..."
+    all_sites=$(ah-site list on:$server)
+    # site_checks=$(for site in $all_sites; do
+    #     site_check=$(site-check $site 2> /dev/null)
+    #     if [[ "$site_check" == *"success"* ]]; then
+    #         echo "$site: success"
+    #     else
+    #         echo "$site: failed"
+    #     fi
+    # done)
+
+    
+
+
+
+
+    
+
+    # for site in $all_sites; do
+    #     site_check=$(site-check $site)
+    #     if [[ "$site_check" == *"success"* ]]; then
+    #         echo "success"
+    #     else
+    #         echo "failed"
+    #     fi
+    # done
+    
+
 }
-# Monitoring Status
-# Service Status
-# Site Check for all the sites on the server ? (I think this might get pretty long for some servers. But just noting it down here)
+
+
+
 # No Extra Volumes are left (eg no extra /mnt/resize-wf-* type vols)
 # Server Status
 # Server Load
