@@ -279,7 +279,7 @@ server-sanity-checks () {
         failed_sites_list=$(echo -e "$failed_sites" | awk '{print $1}' | rev | cut -c2- | rev)
         failed_sites_list_csv=$(echo -e "$failed_sites" | awk '{print $1}' | rev | cut -c2- | rev | tr '\n' ',' | rev | cut -c2- | rev)
         nos_failed_sites=$(echo -e "$failed_sites" | wc -l)
-        echo -e "$nos_failed_sites out of $nos_all_sites Site(s) on $server Failed Site Check - $failed_sites_list_csv"
+        echo -e "$nos_failed_sites / $nos_all_sites Site(s) on $server Failed Site Check - $failed_sites_list_csv"
     fi
 
     echo -e ""
