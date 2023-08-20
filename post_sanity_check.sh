@@ -343,7 +343,7 @@ server-sanity-checks () {
 
 
     # Just echoing here to use sv-get status if any further details are required. (Just to remove clutter from the overall output)
-    echo -e "\nNote: Please feel free to use sv-getstatus $server if you want some additional configuration details like ec2_id, etc for $server."
+    echo -e "\nNote: Please feel free to use sv-getstatus $server, if you want some additional configuration details like ec2_id, etc for $server."
 }
 
 
