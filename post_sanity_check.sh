@@ -274,7 +274,7 @@ server-sanity-checks () {
     failed_sites=$(echo "$site_checks" | awk -F ' : ' '/failed/{print $1}')
 
     if [ -z "$failed_sites" ]; then
-        echo "All the Sites on $server Passed the Site Checks."
+        echo "All the Sites on $server Passed the Site Checks"
     else
         failed_sites_list=$(echo -e "$failed_sites" | awk '{print $1}' | rev | cut -c2- | rev)
         failed_sites_list_csv=$(echo -e "$failed_sites" | awk '{print $1}' | rev | cut -c2- | rev | tr '\n' ',' | rev | cut -c2- | rev)
