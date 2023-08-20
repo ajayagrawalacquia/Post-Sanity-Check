@@ -349,7 +349,6 @@ server-sanity-checks () {
 
 
 # sv-getstatus Output (as it gives some neat outputs)
-# Space Checks
 # Volume Listing
 
 
