@@ -274,12 +274,12 @@ server-sanity-checks () {
     failed_sites=$(echo "$site_checks" | awk -F ' : ' '/failed/{print $1}')
 
     if [ -z "$failed_sites" ]; then
-        echo "$nos_all_sites / $nos_all_sites Sites on $server Passed the Site Checks"
+        echo "$nos_all_sites/$nos_all_sites Sites on $server Passed the Site Checks"
     else
         failed_sites_list=$(echo -e "$failed_sites" | awk '{print $1}' | rev | cut -c2- | rev)
         failed_sites_list_csv=$(echo -e "$failed_sites" | awk '{print $1}' | rev | cut -c2- | rev | tr '\n' ',' | rev | cut -c2- | rev)
         nos_failed_sites=$(echo -e "$failed_sites" | wc -l)
-        echo -e "$nos_failed_sites / $nos_all_sites Site(s) on $server Failed Site Check - $failed_sites_list_csv"
+        echo -e "$nos_failed_sites/$nos_all_sites Site(s) on $server Failed Site Check - $failed_sites_list_csv"
     fi
 
 
@@ -307,13 +307,24 @@ server-sanity-checks () {
         echo -e "Something's Wrong ! Details below:\n$status"
     fi
 
+
+    # Server Load
+    server_load_by_pct=$(site-getloadpct $(ah-site list on:$server | head -n 1) | grep $server)
+    check_output=$(check_high_load_by_pct "$server_load_by_pct")
+    if [ -n "$check_output" ]; then
+        echo -e "$server is on High Load. Details below:\n$server_load_by_pct"
+    else
+        echo "Server Load looks fine"
+    fi
+
+
 }
 
 
 
 
 
-# Server Load
+
 # sv-getstatus Output (as it gives some neat outputs)
 # Space Checks
 # Volume Listing
