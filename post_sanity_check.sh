@@ -293,15 +293,25 @@ server-sanity-checks () {
     else
         echo -e "Volumes looks OK. No Resize Workflow Volumes attached."
     fi
-    
 
+
+    # Server Status
+    status=$(ah-server status $server);
+    impaired_count=$(grep -o -i "impaired" <<< "$status" | wc -l);
+    passed_count=$(grep -o -i "passed" <<< "$status" | wc -l);
+    failed_count=$(grep -o -i "failed" <<< "$status" | wc -l);
+    if [[ $passed_count -eq 2 && $impaired_count -eq 0 && $failed_count -eq 0 ]]; then
+        echo -e "Server Status Check Passed."
+    else
+        echo -e "Something's Wrong ! Details below:\n$status"
+    fi
 
 }
 
 
 
 
-# Server Status
+
 # Server Load
 # sv-getstatus Output (as it gives some neat outputs)
 # Space Checks
