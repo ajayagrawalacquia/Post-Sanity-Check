@@ -256,7 +256,7 @@ server-sanity-checks () {
         echo -e "Services looks OK"
     fi
 
-    # Site Check for all the sites on the server ? (I think this might get pretty long for some servers. But just noting it down here)
+    # Site Check for all the sites on the server
     echo -e "\n[ $(date) ] - Performing Site Check for all the Sites in $server..."
     all_sites=$(ah-site list on:$server)
     all_sites_csv=$(echo -e "$all_sites" | tr '\n' ',' | rev | cut -c2- | rev)
