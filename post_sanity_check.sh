@@ -77,7 +77,7 @@ check_space_filled() {
 # Check if the Input is site or Server
 is_site_or_server() {
     local input="$1"
-    
+
     if [[ "$input" =~ [a-zA-Z]+-[0-9]+ ]]; then
         echo "server"
     else
@@ -147,7 +147,7 @@ site-sanity-checks() {
         echo -e "$check_output"
     fi
     rm $OPSTMP/webchecktemp$site
-    
+
 
 
     # Web Rotation Status
@@ -167,16 +167,16 @@ site-sanity-checks() {
             echo -e "$s" >> $OPSTMP/webchecktemp$site
         fi
     done
-    
+
     if [ -s "$OPSTMP/webchecktemp$site" ]; then
         echo -e "$(cat $OPSTMP/webchecktemp$site | wc -l) Web Servers which are NOT tagged as OOB and are NOT in Rotation: $(cat $OPSTMP/webchecktemp$site | tr '\n' ',' | sed 's/.$//')"
         rm $OPSTMP/webchecktemp$site
     else
         echo -e "Web Rotation Checks Passed."
     fi
-    
 
-    
+
+
 
 
 
@@ -195,7 +195,7 @@ site-sanity-checks() {
     # Monitoring Status for Individual Servers
     echo -e "\n[ $(date) ] - Checking Monitoring Status for Individual Servers on $site now ..."
     for s in $(ah-server list site:$site)
-    do 
+    do
         status=$(ah-server list $s -c monitoring_status | awk '{print $2}')
         if [ "$status" -ne 2 ]; then
             echo -e "$s" >> $OPSTMP/monitoring_check_Server_for_$site
@@ -329,11 +329,18 @@ server-sanity-checks () {
         echo "Server Load looks fine"
     fi
 
+
+    # Server Load Core-Wise
+    echo -e "\n[ $(date) ] - Checking Core-Wise Server Load now..."
+    nos_of_cores=$(fssh $server "nproc" 2> /dev/null)
+    core_wise_load_pct=$(fssh $server "mpstat -P ALL 1 1" 2> /dev/null | awk '/^[0-9]/ {print "Core " $3 ":", 100 - $NF "%"}' | tail -n +3)
+    echo -e "$server has total $nos_of_cores cores with below loads core-wise:\n$core_wise_load_pct"
+
     # Space Checks
     echo -e "\n[ $(date) ] - Performing Space Checks..."
     server_df_output=$(sv-df $server 2> /dev/null | sed '1d' | sed '$d')
     check_output=$(check_space_filled "$server_df_output")
-    
+
     if [ -z "$check_output" ]; then
         echo "Space Check Passed."
     else
