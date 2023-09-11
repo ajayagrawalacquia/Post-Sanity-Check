@@ -335,7 +335,7 @@ server-sanity-checks () {
     nos_of_cores=$(fssh $server "nproc" 2> /dev/null)
     core_wise_load_pct=$(fssh $server "mpstat -P ALL 1 1" 2> /dev/null | awk '/^[0-9]/ {print "Core " $3 ":", 100 - $NF "%"}' | tail -n +3)
     
-    echo -e "$server has total $nos_of_cores cores with below are core-wise checks:"
+    echo -e "$server has total $nos_of_cores cores and below are core-wise checks:"
     while IFS= read -r line; do
       core_name=$(echo "$line" | cut -d ':' -f 1)
       load_pct=$(echo "$line" | awk '{print $NF}' | tr -d '%') # Remove the percentage sign
