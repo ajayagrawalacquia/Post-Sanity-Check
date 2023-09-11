@@ -334,7 +334,23 @@ server-sanity-checks () {
     echo -e "\n[ $(date) ] - Checking Core-Wise Server Load now..."
     nos_of_cores=$(fssh $server "nproc" 2> /dev/null)
     core_wise_load_pct=$(fssh $server "mpstat -P ALL 1 1" 2> /dev/null | awk '/^[0-9]/ {print "Core " $3 ":", 100 - $NF "%"}' | tail -n +3)
-    echo -e "$server has total $nos_of_cores cores with below loads core-wise:\n$core_wise_load_pct"
+    
+    echo -e "$server has total $nos_of_cores cores with below are core-wise checks:"
+    while IFS= read -r line; do
+      core_name=$(echo "$line" | cut -d ':' -f 1)
+      load_pct=$(echo "$line" | awk '{print $NF}' | tr -d '%') # Remove the percentage sign
+
+      # Convert load_pct to an integer
+      load_pct_int=${load_pct%.*}
+
+      if [ "$load_pct_int" -gt 75 ]; then
+        echo "$core_name: High Load [ $load_pct% ]"
+      else
+        echo "$core_name: OK ✓"
+      fi
+    done <<< "$core_wise_load_pct"
+
+
 
     # Space Checks
     echo -e "\n[ $(date) ] - Performing Space Checks..."
