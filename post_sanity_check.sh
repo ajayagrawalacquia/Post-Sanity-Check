@@ -290,7 +290,7 @@ site-sanity-checks() {
         if [ -z "$memcache_memory_set" ]; then
             ((webs_no_memcache++))
         else
-            echo -e "$w - $memcache_memory_set"
+            # echo -e "$w - $memcache_memory_set"
             check_memcache_memory_value $w;
             ((webs_have_memcache++))
         fi
