@@ -87,6 +87,52 @@ is_site_or_server() {
 
 
 
+# Function to check if Memcache Memory is set appropriately or not.
+
+str_to_int() {
+    local input="$1"
+    echo "$((input))"
+}
+
+
+get_nearest100() {
+  local input=$1
+  local remainder=$((input % 100))
+  
+  if [ $remainder -lt 50 ]; then
+    echo $((input - remainder))
+  else
+    echo $((input + (100 - remainder)))
+  fi
+}
+
+
+check_memcache_memory_value() {
+    local server="$1"
+    memcache_memory_set=$(ah-server list $server -c memcached.conf:-m | awk '{print $2}')
+    memcache_memory_set=$(str_to_int "$memcache_memory_set")
+
+    total_memory_in_server=$(fssh $server free -t -m 2> /dev/null | grep "Mem" | awk '{ print $2}')
+    total_memory_in_server=$(str_to_int "$total_memory_in_server")
+    memcache_multiplier=0.7
+
+    approx_desired_memcache=$(echo "$total_memory_in_server * $memcache_multiplier" | bc -l)
+    approx_desired_memcache=$(printf "%.0f" "$approx_desired_memcache")
+    approx_desired_memcache=$(get_nearest100 $approx_desired_memcache)
+
+    # echo -e "Total Memory in $server = $total_memory_in_server\nMemcache Memory = $memcache_memory_set\nApprox Desired Memcache = $approx_desired_memcache\n\n\n\n"
+
+    if [ "$memcache_memory_set" -lt "$approx_desired_memcache" ]; then
+      echo -e "\t$server has Insufficient Memcache Memory Set."
+      echo -e "\tIt should have atleast $approx_desired_memcache MB set as Memcache (which currently is $memcache_memory_set)"
+      echo -e "\t\t Use this command to set it now - ah-server edit $server -c memcached.conf:-m=$approx_desired_memcache"
+    else
+      echo -e "$server - OK ✓"
+    fi
+}
+
+
+
 # - - - - - - - - - - Site Checks - - - - - - - - - -
 site-sanity-checks() {
     local site="$1"
@@ -228,6 +274,28 @@ site-sanity-checks() {
     else
         echo -e "Memcache is Enabled for all the Web Servers."
     fi
+
+
+    # Memcache Value Checks
+    echo -e "\n[ $(date) ] - Checking if appropriate Memcache Memory is allocated or not..."
+    
+    webs_in_site=$(ah-server list site:$site -w typeIN'web')
+    webs_have_memcache=0
+    webs_no_memcache=0
+    
+    for w in $webs_in_site
+    do
+        memcache_memory_set=$(ah-server get $w | grep -i "server_settings.memcached.conf.-m" | awk '{print $2}')
+
+        if [ -z "$memcache_memory_set" ]; then
+            ((webs_no_memcache++))
+        else
+            echo -e "$w - $memcache_memory_set"
+            check_memcache_memory_value $w;
+            ((webs_have_memcache++))
+        fi
+    done
+
 
 
 }
