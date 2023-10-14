@@ -152,7 +152,7 @@ site-sanity-checks() {
     # Memcache Value Checks
     echo -e "\n[ $(date) ] - Checking if appropriate Memcache Memory is allocated or not..."
     
-    webs_in_site=$(ah-server list site:$site -w typeIN'web')
+    webs_in_site=$(site-getwebrotationstatus $site 2> /dev/null | awk '{print $1}')
     webs_have_memcache=0
     webs_no_memcache=0
     
