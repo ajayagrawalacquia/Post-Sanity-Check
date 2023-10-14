@@ -55,7 +55,7 @@ site-sanity-checks() {
 
     # Web Checks
     echo -e "\n[ $(date) ] - Performing Web Check now ..."
-    site-checkwebs $site | grep web 2> /dev/null > $OPSTMP/webchecktemp$site | tee /dev/null
+    site-checkwebs $site 2> /dev/null > $OPSTMP/webchecktemp$site | tee /dev/null
     check_output=$(cat $OPSTMP/webchecktemp$site)
     nos_of_webs=$(esl2 $site | grep "web_rotation_status: 1000" | wc -l)
     nos_of_success=$(echo "$check_output" | tr '[:upper:]' '[:lower:]' | grep -o 'success' | wc -l)
