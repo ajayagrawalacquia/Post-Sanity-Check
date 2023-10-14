@@ -78,7 +78,7 @@ server-sanity-checks () {
 
     # Server Load
     echo -e "\n[ $(date) ] - Checking Server Load now..."
-    server_load_by_pct=$(site-getloadpct $(ah-site list on:$server | head -n 1) | grep $server)
+    server_load_by_pct=$(site-getloadpct_with_no_color $(ah-site list on:$server | head -n 1) | grep $server)
     check_output=$(check_high_load_by_pct "$server_load_by_pct")
     if [ -n "$check_output" ]; then
         echo -e "$server is on High Load. Details below:\n$server_load_by_pct"

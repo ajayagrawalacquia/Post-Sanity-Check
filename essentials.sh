@@ -132,3 +132,47 @@ check_memcache_memory_value() {
     fi
 }
 
+
+
+site-getloadpct_with_no_color() {
+    [ $# -lt 1 ] && echo "Usage: ${FUNCNAME[0]} SITE" && return 0;
+    local site=$1;
+    local file=$OPSTMP/site-getloadpct.$(date +"%Y%m%d_%H%M%S");
+    local filetmp=$OPSTMP/site-getloadpct.tmp.$(date +"%Y%m%d_%H%M%S");
+    local filetmp2=$OPSTMP/site-getloadpct.tmp2.$(date +"%Y%m%d_%H%M%S");
+    local filefinal=$OPSTMP/site-getloadpct.final.$(date +"%Y%m%d_%H%M%S");
+    echo "================== Responding servers ==================";
+    fpdsh -t site:$site -p 20 -c "uptime;grep 'model name' /proc/cpuinfo | wc -l" 2> $file | grep -v ^svn | sort >> $filetmp;
+    cat $filetmp | xargs -d '\n' -n2 > $filetmp2;
+    awk '{if (NF > 2) {
+           if ($3=="up") {
+              START=1;
+              ENDFIELD=NF-2;
+              CORERECORD=NF
+           }
+           else {
+              START=3;
+              ENDFIELD=NF;
+              CORERECORD=2;
+           }
+           for (i=START; i <= (ENDFIELD-3); ++i) {
+              printf("%s ", $i);
+           }
+           for (j=(ENDFIELD-2); j<=ENDFIELD; ++j) {
+              VALUE=sprintf("%.2f", $j/$CORERECORD*100);
+              INTVALUE=int(VALUE);
+              printf("%.2f%c ", VALUE, "%");
+           }
+           printf("\n");
+        }
+      }' $filetmp2 | sed "s/\x1B\[[0-9;]*[JKmsu]//g" >> $filefinal;  # Remove ANSI escape codes
+    cat $filefinal;
+    if [[ -s $file ]]; then
+        echo -e "\n============= Not responding servers =============";
+        awk '{printf "%s ",$2;}{printf "Offline: "}{for(i=3; i<=NF; ++i) printf "%s ", $i; print ""}' $file;
+    fi;
+    rm $file;
+    rm $filetmp;
+    rm $filetmp2;
+    rm $filefinal
+}
