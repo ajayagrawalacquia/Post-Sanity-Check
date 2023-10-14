@@ -107,7 +107,6 @@ site-sanity-checks() {
         check_output=$(site-mon get $site 2> /dev/null)
     fi
     
-    check_output=$(site-mon get $site)
     if [[ $(echo "$check_output" | grep -i -E "absent|has no domains in") ]]; then
         echo -e "$check_output"
         echo -e "Looks like Monitoring is not enabled for $site. Use site-monenable $site to enable Monitoring if you have missed."
