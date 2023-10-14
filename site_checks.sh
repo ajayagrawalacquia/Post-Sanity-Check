@@ -117,7 +117,12 @@ site-sanity-checks() {
     do
         status=$(ah-server list $s -c monitoring_status | awk '{print $2}')
         if [ "$status" -ne 2 ]; then
-            echo -e "$s" >> $OPSTMP/monitoring_check_Server_for_$site
+            server_tag=$(ah-server tag list $s 2> /dev/null)
+            if [[ $server_tag == *monitor_suppress* ]]; then
+                echo -e "Monitoring is Intentionally Suppressed for $s and hence, can be IGNORED !"
+            else
+                echo -e "$s" >> $OPSTMP/monitoring_check_Server_for_$site
+            fi
         fi
     done
 
