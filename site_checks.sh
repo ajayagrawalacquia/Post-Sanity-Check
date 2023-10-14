@@ -36,7 +36,8 @@ site-sanity-checks() {
     # Individual Server Load Details by Percentage
     echo -e "\n[ $(date) ] - Checking Load of Individual servers by Percentage on the stack now ..."
     touch "$OPSTMP/loadchecktemp$site"
-    site-getloadpct "$site" | sed '1d' 2> /dev/null > "$OPSTMP/loadchecktemp$site" | tee /dev/null
+    # site-getloadpct "$site" | sed '1d' 2> /dev/null > "$OPSTMP/loadchecktemp$site" | tee /dev/null
+    script --return --quiet -c "site-getloadpct $site | sed '1d' 2> /dev/null" "$OPSTMP/loadchecktemp$site"
     check_output=$(cat "$OPSTMP/loadchecktemp$site")
 
     if [ -n "$check_output" ]; then
