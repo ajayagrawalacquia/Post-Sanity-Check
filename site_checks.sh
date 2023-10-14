@@ -47,7 +47,7 @@ site-sanity-checks() {
             echo "Load for the whole stack looks fine."
         fi
     else
-        echo "There are no dedicated web servers for $site !"
+        echo "The servers for $site can be ignored safely !"
     fi
 
 
