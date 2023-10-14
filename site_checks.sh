@@ -1,5 +1,3 @@
-
-
 # - - - - - - - - - - Site Checks - - - - - - - - - -
 site-sanity-checks() {
     local site="$1"
@@ -37,13 +35,21 @@ site-sanity-checks() {
 
     # Individual Server Load Details by Percentage
     echo -e "\n[ $(date) ] - Checking Load of Individual servers by Percentage on the stack now ..."
-    check_output=$(site-getloadpct $site | sed '1d')
-    load_outputs=$(check_high_load_by_pct "$check_output")
-    if [ -n "$load_outputs" ]; then
-        echo -e "High load found on some server(s). Details below:\n$load_outputs"
+    touch "$OPSTMP/loadchecktemp$site"
+    site-getloadpct "$site" | sed '1d' 2> /dev/null > "$OPSTMP/loadchecktemp$site" | tee /dev/null
+    check_output=$(cat "$OPSTMP/loadchecktemp$site")
+
+    if [ -n "$check_output" ]; then
+        load_outputs=$(check_high_load_by_pct "$check_output")
+        if [ -n "$load_outputs" ]; then
+            echo -e "High load found on some server(s). Details below:\n$load_outputs"
+        else
+            echo "Load for the whole stack looks fine."
+        fi
     else
-        echo "Load for the whole stack looks fine."
+        echo "There are no dedicated web servers for $site !"
     fi
+
 
 
 

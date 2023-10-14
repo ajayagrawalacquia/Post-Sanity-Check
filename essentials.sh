@@ -38,15 +38,16 @@ get_fuser ()
 
 
 check_high_load_by_pct() {
-    webloads="$1"
-    echo "$webloads" | sed -r 's/\x1B\[[0-9;]*[mK]//g' | while IFS= read -r line; do
-        load=$(echo "$line" | awk '{print $11}' | tr -d '%')
-        rounded_load=$(ruby -e "puts $load.to_f.round")
-        if [ $rounded_load -gt 70 ]; then   # Assuming more than 70% is high load
+    local webloads="$1"
+    while IFS= read -r line; do
+        local load=$(echo "$line" | awk '{print $11}' | tr -d '%')
+        local rounded_load=$(printf "%.0f" "$load")
+        if [ "$rounded_load" -gt 70 ]; then
             echo -e "$line"
         fi
-    done
+    done <<< "$webloads"
 }
+
 
 
 
