@@ -144,19 +144,26 @@ site-sanity-checks() {
     # Memcache Service Status on Individual Web Servers
     echo -e "\n[ $(date) ] - Checking Memcache Status for Individual Web Servers now ..."
     webs=$(site-getwebrotationstatus $site 2> /dev/null | awk '{print $1}')
-    for w in $webs; do
-        status=$(ah-server get $w | grep memcache_service_status | awk '{print $2}')
-        if [ "$status" -ne 2 ]; then
-            echo -e "$w" >> $OPSTMP/memcache_check_Server_for_$site
-        fi
-    done
 
-    if [ -s "$OPSTMP/memcache_check_Server_for_$site" ]; then
-        echo -e "$(cat $OPSTMP/memcache_check_Server_for_$site | wc -l) Web Server(s) have Memcache Disabled: $(cat $OPSTMP/memcache_check_Server_for_$site | tr '\n' ',' | sed 's/.$//')"
-        rm $OPSTMP/memcache_check_Server_for_$site
+    if [ -z "$webs" ]; then
+        echo -e "No Memcache Allotted Servers Found in $site"
     else
-        echo -e "Memcache is Enabled for all the Web Servers."
+        for w in $webs; do
+            status=$(ah-server get $w | grep memcache_service_status | awk '{print $2}')
+            if [ "$status" -ne 2 ]; then
+                echo -e "$w" >> $OPSTMP/memcache_check_Server_for_$site
+            fi
+        done
+
+        if [ -s "$OPSTMP/memcache_check_Server_for_$site" ]; then
+            echo -e "$(cat $OPSTMP/memcache_check_Server_for_$site | wc -l) Web Server(s) have Memcache Disabled: $(cat $OPSTMP/memcache_check_Server_for_$site | tr '\n' ',' | sed 's/.$//')"
+            rm $OPSTMP/memcache_check_Server_for_$site
+        else
+            echo -e "Memcache is Enabled for all the Web Servers."
+        fi
     fi
+
+
 
 
 
@@ -167,7 +174,7 @@ site-sanity-checks() {
     webs_have_memcache=0
     webs_no_memcache=0
     
-    if [ -z "$your_variable" ]; then
+    if [ -z "$webs_in_site" ]; then
         echo -e "No Memcache Allotted Servers Found in $site"
     else
         for w in $webs_in_site
