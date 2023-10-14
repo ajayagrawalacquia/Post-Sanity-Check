@@ -167,20 +167,26 @@ site-sanity-checks() {
     webs_have_memcache=0
     webs_no_memcache=0
     
-    for w in $webs_in_site
-    do
-        memcache_memory_set=$(ah-server get $w | grep -i "server_settings.memcached.conf.-m" | awk '{print $2}')
+    if [ -z "$your_variable" ]; then
+        echo -e "No Memcache Allotted Servers Found in $site"
+    else
+        for w in $webs_in_site
+        do
+            memcache_memory_set=$(ah-server get $w | grep -i "server_settings.memcached.conf.-m" | awk '{print $2}')
 
-        if [ -z "$memcache_memory_set" ]; then
-            ((webs_no_memcache++))
-        else
-            # echo -e "$w - $memcache_memory_set"
-            check_memcache_memory_value $w;
-            ((webs_have_memcache++))
-        fi
+            if [ -z "$memcache_memory_set" ]; then
+                ((webs_no_memcache++))
+            else
+                # echo -e "$w - $memcache_memory_set"
+                check_memcache_memory_value $w;
+                ((webs_have_memcache++))
+            fi
 
-        echo ""
-    done
+            echo ""
+        done
+    fi
+
+
 
 
 
