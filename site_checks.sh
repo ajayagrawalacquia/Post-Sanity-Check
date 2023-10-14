@@ -101,8 +101,14 @@ site-sanity-checks() {
 
     # Monitoring Status for Site
     echo -e "\n[ $(date) ] - Checking Monitoring Status for $site now ..."
+    if [[ $FIELDS_STAGE == *enterprise-g1* ]]; then
+        check_output=$(acsf-site-mon get $site 2> /dev/null)
+    else
+        check_output=$(site-mon get $site 2> /dev/null)
+    fi
+    
     check_output=$(site-mon get $site)
-    if [[ $(echo "$check_output" | grep -i "absent") ]]; then
+    if [[ $(echo "$check_output" | grep -i -E "absent|has no domains in") ]]; then
         echo -e "$check_output"
         echo -e "Looks like Monitoring is not enabled for $site. Use site-monenable $site to enable Monitoring if you have missed."
     else
@@ -154,9 +160,10 @@ site-sanity-checks() {
     fi
 
 
+
+
     # Memcache Value Checks
     echo -e "\n[ $(date) ] - Checking if appropriate Memcache Memory is allocated or not..."
-    
     webs_in_site=$(site-getwebrotationstatus $site 2> /dev/null | awk '{print $1}')
     webs_have_memcache=0
     webs_no_memcache=0
@@ -180,8 +187,4 @@ site-sanity-checks() {
 
 }
 
-
-
-
-# Command to check tags - "ah-server list web-46562 -c tags"
 
