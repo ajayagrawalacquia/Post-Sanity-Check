@@ -167,6 +167,8 @@ site-sanity-checks() {
             check_memcache_memory_value $w;
             ((webs_have_memcache++))
         fi
+
+        echo ""
     done
 
 
