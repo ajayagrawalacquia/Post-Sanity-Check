@@ -133,7 +133,7 @@ site-sanity-checks() {
 
     # Memcache Service Status on Individual Web Servers
     echo -e "\n[ $(date) ] - Checking Memcache Status for Individual Web Servers now ..."
-    webs=$(ah-server list site:$site | grep web)
+    webs=$(site-getwebrotationstatus $site 2> /dev/null | awk '{print $1}')
     for w in $webs; do
         status=$(ah-server get $w | grep memcache_service_status | awk '{print $2}')
         if [ "$status" -ne 2 ]; then
