@@ -119,7 +119,7 @@ site-sanity-checks() {
         if [ "$status" -ne 2 ]; then
             server_tag=$(ah-server tag list $s 2> /dev/null)
             if [[ $server_tag == *monitor_suppress* ]]; then
-                echo -e "Monitoring is Intentionally Suppressed for $s and hence, can be IGNORED !"
+                echo -e "Intentionally Suppressed for $s"
             else
                 echo -e "$s" >> $OPSTMP/monitoring_check_Server_for_$site
             fi
@@ -130,7 +130,7 @@ site-sanity-checks() {
         echo -e "$(cat $OPSTMP/monitoring_check_Server_for_$site | wc -l) Server(s) are/is NOT being Monitored: $(cat $OPSTMP/monitoring_check_Server_for_$site | tr '\n' ',' | sed 's/.$//')"
         rm $OPSTMP/monitoring_check_Server_for_$site
     else
-        echo -e "All the Servers on $site are being Monitored."
+        echo -e "All the Servers on $site are being Monitored (Intentionally Suppressed are Ignored)"
     fi
 
 
