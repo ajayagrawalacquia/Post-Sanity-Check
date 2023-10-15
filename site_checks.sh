@@ -188,7 +188,7 @@ site-sanity-checks() {
                     ((webs_have_memcache++))
                 fi
             else
-                echo -e "$s is not tagged as 'oob'. Skipping."
+                echo -e "- $s is not tagged as 'oob'. Skipping."
             fi  
         done
     fi
