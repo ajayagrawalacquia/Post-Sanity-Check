@@ -173,30 +173,44 @@ site-sanity-checks() {
     webs_in_site=$(site-getwebrotationstatus $site 2> /dev/null | awk '{print $1}')
     webs_have_memcache=0
     webs_no_memcache=0
-    
+
     if [ -z "$webs_in_site" ]; then
         echo -e "No Memcache Allotted Servers Found in $site"
     else
-        for w in $webs_in_site
-        do
-            memcache_memory_set=$(ah-server get $w | grep -i "server_settings.memcached.conf.-m" | awk '{print $2}')
-
-            if [ -z "$memcache_memory_set" ]; then
-                ((webs_no_memcache++))
+        for s in $webs_in_site; do
+            tags_in_server=$(ah-server tag list $s 2> /dev/null)
+            if [[ $(echo "$tags_in_server" | grep -i "oob") ]]; then
+                memcache_memory_set=$(ah-server get $s | grep -i "server_settings.memcached.conf.-m" | awk '{print $2}')
+                if [ -z "$memcache_memory_set" ]; then
+                    ((webs_no_memcache++))
+                else
+                    check_memcache_memory_value $s;
+                    ((webs_have_memcache++))
+                fi
             else
-                # echo -e "$w - $memcache_memory_set"
-                check_memcache_memory_value $w;
-                ((webs_have_memcache++))
-            fi
-
-            echo ""
+                echo -e "$s is not tagged as 'oob'. Skipping."
+            fi  
         done
     fi
 
 
+    
+    # if [ -z "$webs_in_site" ]; then
+    #     echo -e "No Memcache Allotted Servers Found in $site"
+    # else
+    #     for w in $webs_in_site
+    #     do
+    #         memcache_memory_set=$(ah-server get $w | grep -i "server_settings.memcached.conf.-m" | awk '{print $2}')
 
-
-
+    #         if [ -z "$memcache_memory_set" ]; then
+    #             ((webs_no_memcache++))
+    #         else
+    #             # echo -e "$w - $memcache_memory_set"
+    #             check_memcache_memory_value $w;
+    #             ((webs_have_memcache++))
+    #         fi
+    #     done
+    # fi
 }
 
 
