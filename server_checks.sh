@@ -78,13 +78,26 @@ server-sanity-checks () {
 
     # Server Load
     echo -e "\n[ $(date) ] - Checking Server Load now..."
-    server_load_by_pct=$(site-getloadpct_with_no_color $(ah-site list on:$server | head -n 1) | grep $server)
-    check_output=$(check_high_load_by_pct "$server_load_by_pct")
-    if [ -n "$check_output" ]; then
-        echo -e "$server is on High Load. Details below:\n$server_load_by_pct"
+    server_load=$(site-getloadpct_with_no_color $(ah-site list on:$server | head -n 1) | grep $server)
+    if [ -z "$server_load" ]; then
+        echo -e "$server looks like an Individual Server with No Sites ! Below is the Load Average for $server:"
+        sv-up $server 2> /dev/null;
     else
-        echo "Server Load looks fine"
+        check_output=$(check_high_load_by_pct "$server_load_by_pct")
+        if [ -n "$check_output" ]; then
+            echo -e "$server is on High Load. Details below:\n$server_load"
+        else
+            echo "Server Load looks fine"
+        fi
     fi
+
+    # server_load_by_pct=$(site-getloadpct_with_no_color $(ah-site list on:$server | head -n 1) | grep $server)
+    # check_output=$(check_high_load_by_pct "$server_load_by_pct")
+    # if [ -n "$check_output" ]; then
+    #     echo -e "$server is on High Load. Details below:\n$server_load_by_pct"
+    # else
+    #     echo "Server Load looks fine"
+    # fi
 
 
     # Server Load Core-Wise
