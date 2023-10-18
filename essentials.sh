@@ -1,4 +1,8 @@
 # some supporting functions
+
+source $OPSROOT/lib/bash/profile.d/ops-env.sh 2> /dev/null
+
+
 fqual ()
 {
     if [ "$FACCT_TYPE" != "managed" ]; then
