@@ -388,9 +388,9 @@ site-sanity-checks() {
     nos_of_webs=$(esl2 $site | grep "web_rotation_status: 1000" | wc -l)
     nos_of_success=$(echo "$check_output" | tr '[:upper:]' '[:lower:]' | grep -o 'success' | wc -l)
     if [ $nos_of_webs -eq $nos_of_success ]; then
-        echo -e "$nos_of_success / $nos_of_webs Success Web Check"
+        echo -e "$nos_of_success/$nos_of_webs Success Web Check"
     else
-        echo -e "Something's Wrong Here. Only $nos_of_success / $nos_of_webs Success Web Checks."
+        echo -e "Something's Wrong Here. Only $nos_of_success/$nos_of_webs Success Web Checks."
         echo -e "site-checkwebs $site below:"
         echo -e "$check_output"
     fi
