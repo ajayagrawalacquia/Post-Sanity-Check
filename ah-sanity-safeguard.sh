@@ -391,7 +391,7 @@ site-sanity-checks() {
         echo -e "$nos_of_success/$nos_of_webs Success Web Check"
     else
         echo -e "Something's Wrong Here. Only $nos_of_success/$nos_of_webs Success Web Checks."
-        echo -e "site-checkwebs $site below:"
+        echo -e "Output of 'site-checkwebs $site' below:"
         echo -e "$check_output"
     fi
     rm $OPSTMP/webchecktemp$site
