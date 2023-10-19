@@ -13,6 +13,7 @@ main() {
     fi
 }
 
+[ $# -lt 1 ] && echo "Usage: ${FUNCNAME[0]} Site/Server" && return 0;
 source essentials.sh;
 source server_checks.sh;
 source site_checks.sh;
