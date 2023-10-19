@@ -1,4 +1,3 @@
-
 # Main Function
 main() {
     local input="$1"
